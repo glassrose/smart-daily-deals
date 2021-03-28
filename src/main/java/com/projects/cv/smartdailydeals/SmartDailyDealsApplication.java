@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.projects.cv.smartdailydeals.model.Deal;
 import com.projects.cv.smartdailydeals.repository.cache.DealsRepository;
 import com.projects.cv.smartdailydeals.repository.cache.DealsRepositoryImpl;
+import com.projects.cv.smartdailydeals.repository.stream.KafkaRepository;
+import com.projects.cv.smartdailydeals.repository.stream.KafkaRepositoryImpl;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.SpringApplication;
@@ -57,6 +59,11 @@ public class SmartDailyDealsApplication {
 	@Bean
 	KafkaTemplate<String, Deal> kafkaTemplate() {
 		return new KafkaTemplate<>(producerFactory());
+	}
+
+	@Bean
+	KafkaRepository kafkaRepository() {
+		return new KafkaRepositoryImpl();
 	}
 
 	public static void main(String[] args) {

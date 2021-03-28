@@ -1,6 +1,7 @@
 package com.projects.cv.smartdailydeals.repository.cache;
 
 import com.projects.cv.smartdailydeals.model.Deal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -14,6 +15,7 @@ public class DealsRepositoryImpl implements DealsRepository {
     private RedisTemplate<String, Deal> redisTemplate;
     private HashOperations hashOperations;
 
+    @Autowired
     public DealsRepositoryImpl(RedisTemplate<String, Deal> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.hashOperations = redisTemplate.opsForHash();
