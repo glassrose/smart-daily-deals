@@ -26,11 +26,15 @@ public class ItemResource {
 
     @PostMapping("/add")
     public void add(@RequestBody final Item item) {
-        itemService.addItem(item);
+        if (itemService.addItem(item) == 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item Category does not exist. Create one first" );
+        }
     }
 
     @PutMapping("/update/{id}")
     public Item update(@PathVariable("id") final long id, @RequestBody Item item) {
+        if (item.getId() != id)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provided update item's id mismatches provided id.");
         itemService.updateItem(id, item);
         return getItem(id);
     }

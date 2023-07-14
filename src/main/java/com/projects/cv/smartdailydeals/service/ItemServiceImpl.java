@@ -1,6 +1,8 @@
 package com.projects.cv.smartdailydeals.service;
 
+import com.projects.cv.smartdailydeals.model.Category;
 import com.projects.cv.smartdailydeals.model.Item;
+import com.projects.cv.smartdailydeals.repository.jpa.CategoryRepository;
 import com.projects.cv.smartdailydeals.repository.jpa.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,18 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     ItemRepository itemRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
+
     @Override
-    public void addItem(Item item) {
+    public int addItem(Item item) {
+        Optional<Category> category = categoryRepository.findById(item.getCategoryId());
+        if (!category.isPresent()) {
+            return 1;
+        }
         itemRepository.save(item);
+        return 0;
     }
 
     @Override
@@ -27,7 +38,6 @@ public class ItemServiceImpl implements ItemService {
 
             Item dbFetchedItem = dbFetchedItemOptional.get();
 
-            dbFetchedItem.setCategoryId(update.getCategoryId());
             dbFetchedItem.setCost(update.getCost());
             dbFetchedItem.setDealApplied(update.isDealApplied());
             dbFetchedItem.setDescription(update.getDescription());
