@@ -41,7 +41,7 @@ public class DealsServiceImpl implements DealsService {
 
             double ceilPercentOfActiveDeals = category.getCeilPercentOfDailyDeals();
             long hardLimitOnDealItems = category.getHardNumericLimitOfItemsOnDailyDeals();
-            long realLimit = Math.max((long)(ceilPercentOfActiveDeals/100*DAILY_DEAL_ITEMS_LIMIT), hardLimitOnDealItems);
+            long realLimit = Math.min((long)(ceilPercentOfActiveDeals/100*DAILY_DEAL_ITEMS_LIMIT), hardLimitOnDealItems);
 
             items.addAll(itemRepository.findItemByCategoryIds(categoryId));
         }
@@ -52,7 +52,7 @@ public class DealsServiceImpl implements DealsService {
     private DealItem itemToDealItem(Item item) {
         long itemId = item.getId();
         long categoryId = item.getCategoryId();
-        String categoryName = categoryRepository.findById(item.getCategoryId()).get().getName();
+        String categoryName = categoryRepository.findById(categoryId).get().getName();
 
         String topLevelCategoryName = getTopLevelCategoryName(categoryId);
 
@@ -91,10 +91,12 @@ public class DealsServiceImpl implements DealsService {
             while (category.getParentCategoryId() != 0) {
                 Optional<Category> parentCategoryOptional = categoryRepository.findById(category.getParentCategoryId());
                 if (parentCategoryOptional.isPresent()) {
+                    if (parentCategoryOptional.get().getId() == category.getId()) // cycle detected
+                        return "Cycle detected in fetching top-level-category. category-id: " + category.getId();
                     category = parentCategoryOptional.get();
                 } else {
-                    //inconsistency. Cycle?
-                    return "No Top Level Category found";
+                    //inconsistency.
+                    return "No parent-category found for category-id: " + category.getParentCategoryId();
                 }
             }
             //Found top-level category
