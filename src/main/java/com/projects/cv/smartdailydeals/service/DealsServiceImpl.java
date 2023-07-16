@@ -41,10 +41,15 @@ public class DealsServiceImpl implements DealsService {
 
             double ceilPercentOfActiveDeals = category.getCeilPercentOfDailyDeals();
             long hardLimitOnDealItems = category.getHardNumericLimitOfItemsOnDailyDeals();
-            final long realLimit = Math.min((long)(ceilPercentOfActiveDeals/100*DAILY_DEAL_ITEMS_LIMIT), hardLimitOnDealItems);
+            long realLimit;
+            if (hardLimitOnDealItems == -1) {
+                realLimit = -1;
+            } else {
+                realLimit = Math.min((long) (ceilPercentOfActiveDeals / 100 * DAILY_DEAL_ITEMS_LIMIT), hardLimitOnDealItems);
+            }
 
             List<Item> itemsForCategory = itemRepository.findItemsByCategoryId(categoryId);
-            if (realLimit >= itemsForCategory.size())
+            if (realLimit >= itemsForCategory.size() || realLimit == -1)
                 items.addAll(itemsForCategory);
             else { //fetch realLimit number of items of this category, in random order
                 long limit = realLimit;
