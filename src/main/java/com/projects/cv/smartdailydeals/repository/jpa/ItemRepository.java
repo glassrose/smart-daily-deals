@@ -16,5 +16,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
 //    @Query("SELECT i FROM Item i where i.categoryId = ?1 ORDER BY rand()") // randomization is anyhow done at service level
     @Query("SELECT i FROM Item i where i.categoryId = ?1")
-    List<Item> findItemByCategoryIds (long categoryId);
+    List<Item> findItemsByCategoryId(long categoryId);
 }

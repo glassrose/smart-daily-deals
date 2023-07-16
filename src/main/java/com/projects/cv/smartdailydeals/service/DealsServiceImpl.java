@@ -43,7 +43,12 @@ public class DealsServiceImpl implements DealsService {
             long hardLimitOnDealItems = category.getHardNumericLimitOfItemsOnDailyDeals();
             long realLimit = Math.min((long)(ceilPercentOfActiveDeals/100*DAILY_DEAL_ITEMS_LIMIT), hardLimitOnDealItems);
 
-            items.addAll(itemRepository.findItemByCategoryIds(categoryId));
+            List<Item> itemsForCategory = itemRepository.findItemsByCategoryId(categoryId);
+            if (realLimit >= itemsForCategory.size())
+                items.addAll(itemsForCategory);
+            else
+                for (int itemNumber=0; itemNumber<realLimit; itemNumber++)
+                    items.add(itemsForCategory.get(itemNumber));
         }
 
         return items;
