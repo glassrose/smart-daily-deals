@@ -24,7 +24,6 @@ public class SchedulingServiceImpl implements SchedulingService {
 
     @Override
     public void activateDealEngine() {
-
         Calendar now = Calendar.getInstance();
 
         //Populate dealItemsOfTheDay every 23:55 PM
@@ -51,10 +50,14 @@ public class SchedulingServiceImpl implements SchedulingService {
             }
         },
                 initialDelay, 10, TimeUnit.MINUTES);
+
+        System.out.println("Deal Engine Activated!");
     }
 
     @Override
     public void deactivateDealEngine() {
+
         scheduler.shutdown();
+        System.out.println("Deal Engine Deactivated!");
     }
 }
